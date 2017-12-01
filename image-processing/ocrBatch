@@ -1,0 +1,8 @@
+#!/bin/bash
+# ocrBatch -- is a simple shell script for doing batch OCR with
+# tesseract
+
+for f in *jpg; do 
+	echo "Performing OCR with tesseract $f";
+	b=`basename "$f" .jpg`; tesseract -l deu_frak "$f" "$b";
+done
