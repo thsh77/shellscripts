@@ -5,7 +5,7 @@ cnt=0
 for i in *.jpg; do
 	let cnt=cnt+1
         if [ $cnt -eq 2 ];
-        then convert $i -crop 1800x2850+240+200 ${i/.jpg/}_crop.jpg
+        then convert $i -crop 1800x2800+260+200 ${i/.jpg/}_crop.jpg
         cnt=0;
         fi;
 done
