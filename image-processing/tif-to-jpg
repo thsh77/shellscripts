@@ -1,0 +1,8 @@
+#!/bin/bash
+# convert-batch is a shell wrapper to convert to allow batch
+# conversion of image files
+
+for f in *.tif; do
+	echo "Converting $f";
+        convert "$f"  "$(basename "$f" .tif).jpg";
+done
