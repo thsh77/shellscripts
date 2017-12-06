@@ -1,0 +1,39 @@
+#!/bin/bash
+
+PN=`basename "$0"`			# Program name
+VER='1.1'
+
+Usage () {
+    echo >&2 "$PN - extract URLs from HTML a tags, version $VER
+usage: $PN [file ...]"
+    exit 1
+}
+
+Msg () {
+    for i
+    do echo "$PN: $i" >&2
+    done
+}
+
+Fatal () { Msg "$@"; exit 1; }
+
+while getopts :hv opt
+do
+    case "$opt" in
+					# your flags here
+        h)	Usage;;
+	v)	echo "$PN - extract URLs from HTML a tags, version $VER" >&2
+		exit 1;;
+        '?')    echo "$0: invalid option -$OPTARG" >&2
+                echo "usage: $0 [-hv] [file ...]" >&2
+           exit 1
+           ;;
+    esac
+    shift
+done
+
+shift $((OPTIND - 1))       		#Remove options, leave arguments
+
+egrep -i '<a[ 	]+href[ 	]*=[ 	]*"?[^">]*"?.*>' "$@" |
+    sed -e 's|.*<[aA][ 	][ 	]*[hH][rR][eE][fF][ 	]*=[ 	]*"*\([^">][^">]*\)"*[^>]*>.*|\1|g'
+
