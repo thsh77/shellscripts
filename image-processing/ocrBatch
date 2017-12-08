@@ -11,12 +11,12 @@ usage: $PN [-h] [file ...]"
     exit 1
 }
 
-while getopts :h opt
+while getopts :hv opt
 do
     case "$opt" in
                                         # your flags here
         h)      Usage;;
-        version)    echo "$PN - perform OCR on multiple files with tesseract, version $VER" >&2
+        v)      echo "$PN - perform OCR on multiple files with tesseract, version $VER" >&2
                 exit 1;;
         '?')    echo "$0: invalid option -$OPTARG" >&2
                 echo "usage: $0 [-hv] [file ...]" >&2
