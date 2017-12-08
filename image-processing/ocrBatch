@@ -2,6 +2,32 @@
 # ocrBatch -- is a simple shell script for doing batch OCR with
 # tesseract
 
+PN=`basename "$0"`                      # Program name
+VER='1.0'
+
+Usage () {
+    echo >&2 "$PN - perform OCR on multiple files with tesseract, version $VER
+usage: $PN [-h] [file ...]"
+    exit 1
+}
+
+while getopts :h opt
+do
+    case "$opt" in
+                                        # your flags here
+        h)      Usage;;
+        version)    echo "$PN - perform OCR on multiple files with tesseract, version $VER" >&2
+                exit 1;;
+        '?')    echo "$0: invalid option -$OPTARG" >&2
+                echo "usage: $0 [-hv] [file ...]" >&2
+           exit 1
+           ;;
+    esac
+    shift
+done
+
+shift $((OPTIND - 1))                   #Remove options, leave arguments
+
 for f in *jpg; do 
 	echo "Performing OCR with tesseract $f";
 	b=`basename "$f" .jpg`; tesseract -l deu_frak "$f" "$b";
