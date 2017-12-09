@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Read one or more HTML/SGML/XML files given on the command
+# line containing markup like <tag>word</tag> and output on
+# standard output a tab-separated list of
+#
+#       count word tag filename
+#
+# sorted by ascending word and tag.
+#
+# Usage:
+#       taglist xml-files
+
+PN=`basename "$0"`                      # Program name
+VER='1.0'
+
+Usage () {
+    echo >&2 "$PN - list tags from HTML/SGML/XML files, version $VER
+usage: $PN [-hv] [file ...]"
+    exit 1
+}
+
+while getopts :hv opt
+do
+    case "$opt" in
+                                        # your flags here
+        h)      Usage;;
+        v)      echo "$PN - list tags from HTML/SGML/XML files, version $VER" >&2
+                exit 1;;
+        '?')    echo "$0: invalid option -$OPTARG" >&2
+                echo "usage: $0 [-hv] [file ...]" >&2
+           exit 1
+           ;;
+    esac
+    shift
+done
+
+shift $((OPTIND - 1))                   #Remove options, leave arguments
+
+process( ) {
+  cat "$1" |
+    sed -e 's#systemitem *role="url"#URL#g' -e 's#/systemitem#/URL#' |
+      tr ' ( ){  }[  ]' '\n\n\n\n\n\n\n' |
+        egrep '>[^<>]+</' |
+          awk -F'[<>]' -v FILE="$1" \
+              '{ printf("%-31s\t%-15s\t%s\n", $3, $2, FILE) }' |
+            sort |
+              uniq -c |
+                sort -k2 -k3 |
+                  awk '{
+                          print ($2 == Last) ? ($0 " <----") : $0
+                          Last = $2
+                       }'
+}
+
+for f in "$@"
+do
+    process "$f"
+done
