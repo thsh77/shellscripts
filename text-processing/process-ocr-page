@@ -30,12 +30,27 @@ shift $((OPTIND - 1))                   #Remove options, leave arguments
 
 insert-page-breaks(){
   sed \
-    -e 's/^\([0-9]\{1,3\}\).*$/<pb n="\1" facs=""\/>/' \
-    -e 's/^[^0-9]*\([0-9]\{1,3\}\)$/<pb n="\1" facs=""\/>/' \
+    -e '1s/^\([0-9]\{1,3\}\).*$/<pb n="\1" facs=""\/>/' \
+    -e '1s/^[^0-9]*\([0-9]\{1,3\}\)$/<pb n="\1" facs=""\/>/' \
   "$@"
+}
+
+add-paragraphs(){
+sed ´
+/^$/!{
+     H
+     d
+     }
+/^$/{
+        x
+        s/^\n/<p>/
+        s/$/<\/p>/
+        G
+     }´ "$@"
 }
 
 for f in "$@"
 do
   insert-page-breaks "$f"
+  #add-paragraphs "$f"
 done
