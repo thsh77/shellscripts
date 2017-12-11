@@ -36,7 +36,7 @@ insert-page-breaks(){
 }
 
 add-paragraphs(){
-sed ´
+sed '
 /^$/!{
      H
      d
@@ -46,11 +46,17 @@ sed ´
         s/^\n/<p>/
         s/$/<\/p>/
         G
-     }´ "$@"
+     }' "$@"
+}
+
+clean-up(){
+  sed \
+    -e '/<p> <\/p>/d' \
+    -e 's/<p>\(<pb n="[0-9]\{1,3\}" facs=""\/>\)<\/p>/\1/g' \
+  "$@"
 }
 
 for f in "$@"
 do
-  insert-page-breaks "$f"
-  #add-paragraphs "$f"
+  insert-page-breaks "$f" | add-paragraphs | clean-up
 done
