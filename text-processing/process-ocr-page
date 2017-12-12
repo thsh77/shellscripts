@@ -1,12 +1,10 @@
 #!/bin/bash
 
-# add XML to scanned book page
-# a filter for adding TEI markup to a text rendering of a scanned book
-# page
-# Usage: process-ocr [-h] [files(s)] > filename 
+# process-ocr is a filter for adding XML markup to a text rendering of
+# a scanned bookpage. Usage: process-ocr [-h] [files(s)] > filename
 
 PROGRAM=`basename "$0"`                 # Program name
-VERSION='1.0'				# version name
+VERSION='1.0'				# Version name
 
 usage () {
     echo >&2 "$PROGRAM - add XML tags to scanned book page, v$VERSION
@@ -17,7 +15,7 @@ usage () {
 while getopts :hv opt
 do
     case "$opt" in
-                                        # your flags here
+                                        # Your flags here
         h)      usage;;
         v)      echo "$PROGRAM - add XML tags to scanned book page, v$VERSION" >&2
                 exit 1;;
@@ -30,7 +28,6 @@ do
 done
 
 shift $((OPTIND - 1))                   			# Remove options, leave arguments
-
 
 insert-page-breaks(){
   sed \
@@ -53,7 +50,14 @@ sed '
      }' "$@"
 }
 
-
+join-lines(){
+sed ':a
+/-$/{
+	N
+	s/-\n/<lb rend="-"\/>/
+	ba
+}' "$@"
+}
 
 clean-up(){
 # 1. reduce newlines to one, 2. remove empty p elements, 3. remove p wrappers
@@ -64,11 +68,13 @@ clean-up(){
         	/^\n$/d
        }' \
     -e '/<p> <\/p>/d' \
-    -e 's/<p>\(<pb n="[0-9]\{1,3\}" facs=""\/>\)<\/p>/\1/g' \
+    -e 's/<p>\(<pb n="[0-9]\{1,3\}" facs=".*"\/>\)<\/p>/\1/g' \
+    -e 's/\([^\.!:]\)<\/p>$/\1/g' \
+    -e 's/\n<p>\([a-zæøå]\)/\1/g' \
   "$@"
 }
 
 for f in "$@"
 do
-  insert-page-breaks "$f" | add-paragraphs | clean-up
+  insert-page-breaks "$f" | join-lines | add-paragraphs | clean-up 
 done
