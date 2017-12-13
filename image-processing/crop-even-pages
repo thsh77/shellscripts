@@ -1,11 +1,16 @@
 #!/bin/bash
 # This shell script crops even file numbers (0,2,4,6..)
 
-cnt=1
-for i in *.jpg; do
-	let cnt=cnt+1
-        if [ $cnt -eq 2 ];
-        then convert $i -crop 1800x2850+100+200 ${i/.jpg/}_crop.jpg
-        cnt=0;
-        fi;
+convert-image(){
+  convert "$@" -crop 1800x2850+100+200 ${@/.jpg/}_crop.jpg
+}
+
+cnt=1				#initialize counter
+for f in "$@"
+do
+  let cnt=cnt+1
+    if [ $cnt -eq 2 ]
+      then convert-image "$f"
+      cnt=0;
+    fi
 done
