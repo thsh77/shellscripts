@@ -28,7 +28,8 @@ done
 
 shift $((OPTIND - 1))                   #Remove options, leave arguments
 
-for f in *jpg; do 
-	echo "Performing OCR with tesseract $f";
+for f in "$@"
+do 
+	echo "Performing OCR with tesseract on $f";
 	b=`basename "$f" .jpg`; tesseract -l deu_frak "$f" "$b";
 done
