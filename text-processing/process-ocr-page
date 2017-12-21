@@ -76,6 +76,5 @@ clean-up(){
 
 for f in "$@"
 do
-  #insert-page-breaks "$f" | join-lines | add-paragraphs #| clean-up
   insert-page-breaks "$f" | add-paragraphs | clean-up | join-lines
 done
