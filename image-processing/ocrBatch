@@ -1,6 +1,9 @@
 #!/bin/bash
 # ocrBatch -- is a simple shell script for doing batch OCR with
 # tesseract
+# todo: I want to be able to provide tesseract image file 
+# extensions and language parameters like deu_frak as parameters
+
 
 PN=`basename "$0"`                      # Program name
 VER='1.0'
