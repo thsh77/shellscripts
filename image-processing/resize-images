@@ -1,5 +1,5 @@
 #!/bin/sh
-# convert-resize-batch is design to perform batch resizing of files
+# convert-resize-batch is designed to perform batch resizing of files
 
 for billede in `ls *.jpg`; do
         echo "convert -resize 300x '$billede' '$(basename '$billede' .jpg)_small.jpg"
