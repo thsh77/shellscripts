@@ -1,0 +1,13 @@
+#!/bin/bash
+# insertPb -- is a simple shell script for inserting a TEI pb element
+# with a page number and a facsimile reference in the beginning of the
+# text
+
+for i in *.txt; do
+	# store basename in variable $name
+       name=`basename "$i" _crop.txt`;
+	# first find pagenumber, place it in @n, and add basename to
+	# @facs. Second remove everything besides pb element
+       sed -e '1s/[0-9]\{1,3\}/<pb n="&" facs="'$name'"\/>/' \
+	   -e 's/.*\(<pb n="[0-9]\{1,3\}" facs=".\{1,17\}"\/>\).*/\1/g' $i
+done

@@ -1,0 +1,8 @@
+#!/bin/bash
+# wordFrequencyCount -- counts word frequencies after isolation words,
+# and mapping to lower case letters. 
+# Usage: wordFrequencyCount <filename>
+# often used with sort -r -n -k2, i.e. descending, numerical sort on
+# the second key
+
+leaveOnlyWords $1 | mapToLowerCase | oneItemPerLine | countFrequencies

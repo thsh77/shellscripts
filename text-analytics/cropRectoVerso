@@ -1,0 +1,17 @@
+#!/bin/bash
+# for book scan files with filenames as in 130019387349_0008.jpg 
+# cropRectoVerso crops recto pages in one way and verso pages in
+# another.
+
+for i in *.jpg; do
+	# extract the last digit of filename to variable fne (filename end)
+	fne="$(basename "$i" .jpg | cut -d'_' -f 2 | awk '{print substr($0,length,1)}')"
+	if [ $(($fne % 2 )) -eq 0 ] ; then
+	#if [ $fne == 0 -o $fne == 2 -o $fne == 4 -o $fne == 6 -o $fne == 8 ] ; then 
+		echo "$i is a right (recto) page file -- let's crop it"
+		convert $i -crop 1650x2450+130+200 ${i/.jpg/}_crop.jpg;
+	else 
+		echo "$i is a left (verso) page file -- let's crop it"
+		convert $i -crop 1700x2500+150+200 ${i/.jpg/}_crop.jpg;
+	fi
+done

@@ -1,0 +1,5 @@
+#!/bin/bash
+# scalarMultiplication
+# First argument $1 is a vector; second argument $3 is scalar
+
+awk '{ $(NF)*=('$2'+0); print }' $1

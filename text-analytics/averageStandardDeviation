@@ -1,0 +1,6 @@
+#!/bin/bash
+# averageStandardDeviation -- computes sum, average and standard
+# deviation of the frequencies in a vector $1
+
+awk  '/[^  ]/ {  s1+=$(NF);  s2+=$(NF)*$(NF)                }
+        END      {  print s1 ,  s1/NR ,  sqrt(s2*NR-s1*s1)/NR  }'  $1

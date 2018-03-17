@@ -1,0 +1,8 @@
+#!/bin/bash
+# vectorAddition -- can be used to measure advances in regard to
+# vocabulary use
+
+adjustBlankTabs $1 |
+awk 'NF>1 { n=$(NF); $(NF)=""; sum[$0]+=n}
+	END {for (string in sum) { print string sum[string]}}
+	' | sort

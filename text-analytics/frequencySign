@@ -1,0 +1,5 @@
+#!/bin/bash
+# frequencySign -- computes the sign of the frequencies of items in a
+# vector
+
+awk '$(NF)>0 {$(NF)=1}; $(NF)<0 {$(NF)=-1}; {print}' $1

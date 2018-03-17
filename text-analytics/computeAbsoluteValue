@@ -1,0 +1,5 @@
+#!/bin/bash
+# computeAbsoluteValue -- computes the absolute value of the
+# frequencies of items in a vector
+
+awk '$(NF) < 0 { $(NF)=-$(NF) }; { print }' $1

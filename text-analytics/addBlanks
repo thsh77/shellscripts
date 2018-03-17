@@ -1,0 +1,9 @@
+#!/bin/bash
+# addBlanks -- is a tool for preprocessing text so that matching
+# a patterns becomes easier.
+
+
+sed 's/[ 	][ 	]*/  /g; 
+     s/^ */ /;
+     s/ *$/ /; 
+     s/^ *$//' $1
