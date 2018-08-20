@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# This script was made to download images. The numbering system was
+# replicated using seq
+
+# make a sequence of four digit numbers, 1 to 1600, incremented by two
+for i in $(seq -f "%04g" 1 2 1000)
+do wget -O L$i.jpg http://eeb.chadwyck.co.uk.ep.fjernadgang.kb.dk/imageConversion.do\?method=downloadImage\&filename=/eeb_multimedia/multimedia/images/jpeg/Pilot/den/kbd/pil/130017585534/001/den-kbd-pil-130017585534-001-${i}R_300.jpg\&type=JPEG    
+done
