@@ -1,0 +1,15 @@
+#!/bin/bash
+# get-files-from-namelist works on newline separated list of filenames
+
+IFS=$'\n' # make newlines only separator
+set -f    # disable globbing
+
+for i in $(cat < "$1"); do
+	echo "Henter: $i"
+	wget "https://sproget.dk/nyheder/$i"
+done
+
+#while IFS="" read -r p || [ -n "$p"]
+#do
+#  wget "https://sproget.dk/nyheder/$p"
+#done < nyheder-liste
