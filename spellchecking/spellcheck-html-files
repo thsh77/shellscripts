@@ -1,7 +1,8 @@
 #!/bin/bash
-# Denne oneliner skal laves til et funktionsdygtigt shellscript:
+
+# Usage: In a directory with html-files do
+# ./spellcheck-html-files
 #
-# for f in *; do printf "\n" && basename $f && printf "\n" && cat $f | aspell list -l da -H | sort -u; done | less
 
 for f in *; do 
 	printf "\n" \
