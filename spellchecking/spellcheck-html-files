@@ -1,0 +1,11 @@
+#!/bin/bash
+# Denne oneliner skal laves til et funktionsdygtigt shellscript:
+#
+# for f in *; do printf "\n" && basename $f && printf "\n" && cat $f | aspell list -l da -H | sort -u; done | less
+
+for f in *; do 
+	printf "\n" \
+	&& basename $f \
+	&& printf "\n" \
+	&& cat $f | aspell list -l da -H | sort -u 
+done
