@@ -1,10 +1,12 @@
 #!/bin/bash
-
-# Usage: In a directory with html-files do
-# ./spellcheck-html-files
+# spellcheck-html-files can be used to check HTML-files. Works best if
+# non-HTML-files are removed from directory
+# Usage: ./spellcheck-html-files html/*.html
 #
+# Denne oneliner skal laves til et funktionsdygtigt shellscript:
+# for f in *; do printf "\n" && basename $f && printf "\n" && cat $f | aspell list -l da -H | sort -u; done | less
 
-for f in *; do 
+for f in "$@"; do 
 	printf "\n" \
 	&& basename $f \
 	&& printf "\n" \
