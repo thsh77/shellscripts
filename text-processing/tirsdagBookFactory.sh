@@ -5,11 +5,35 @@
 
 PROGRAM=`basename "$@"`
 VERSION='1.0'
-SOURCE_DIR='/home/th/Development/textbase/tekstnet-factory/generator/xml/'
-TARGET_DIR='/home/th/Development/tirsdagsprojektet/content/books/'
+CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
+SOURCEDIR='./'
+TARGETDIR='~/Desktop/'
 STYLESHEET='/home/th/Development/textbase/tekstnet-factory/generator/xsl/generator.xsl'
 
-java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
-  -s:$SOURCE_DIR"$1" \
-  -xsl:$STYLESHEET \
-  -o:"/home/th/Desktop/testHTML"
+
+transform() {
+  java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
+    -s:"$1" \
+    -xsl:$STYLESHEET \
+    -o:"$SCRATCHDIR/test"
+}
+
+
+cleanup() {
+
+  dirname=`ls $SCRATCHDIR`
+  
+  if [ -d "/home/th/Desktop/$dirname" ]
+  then
+    echo The directory $dirname already exists -- doing rsync
+    rsync -av $SCRATCHDIR/$dirname/* /home/th/Desktop/$dirname/
+  else
+    echo Make new dir
+    cp -r $SCRATCHDIR/$dirname /home/th/Desktop/
+  fi
+
+  rm -r $SCRATCHDIR;
+}
+
+transform $1 && cleanup 
