@@ -11,12 +11,14 @@ SOURCEDIR='./'
 TARGETDIR='~/Desktop/'
 STYLESHEET='/home/th/Development/textbase/tekstnet-factory/generator/xsl/generator.xsl'
 
+
 transform() {
   java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
     -s:"$1" \
     -xsl:$STYLESHEET \
     -o:"$SCRATCHDIR/test"
 }
+
 
 cleanup() {
 
@@ -25,7 +27,7 @@ cleanup() {
   if [ -d "/home/th/Desktop/$dirname" ]
   then
     echo The directory $dirname already exists -- doing rsync
-    rsync $SCRATCHDIR/$dirname/* /home/th/Desktop/$dirname/
+    rsync -av $SCRATCHDIR/$dirname/* /home/th/Desktop/$dirname/
   else
     echo Make new dir
     cp -r $SCRATCHDIR/$dirname /home/th/Desktop/
