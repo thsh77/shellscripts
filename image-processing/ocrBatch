@@ -34,5 +34,6 @@ shift $((OPTIND - 1))                   #Remove options, leave arguments
 for f in "$@"
 do 
 	echo "Performing OCR with tesseract on $f";
-	b=`basename "$f" .jpg`; tesseract -l deu_frak "$f" "$b";
+	#b=`basename "$f" .jpg`; tesseract -l deu_frak "$f" "$b";
+	b=`basename "$f" .jpg`; tesseract "$f" "$b";
 done
