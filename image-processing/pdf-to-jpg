@@ -1,0 +1,8 @@
+#!/bin/bash
+# convert-batch is a shell wrapper to convert to allow batch
+# conversion of image files
+
+for f in "$@"; do
+	echo "Converting $f" to JPG format;
+  convert -verbose -density 150 -trim "$f" -quality 100 -flatten -sharpen 0x1.0 "$(basename "$f" .pdf).jpg";
+done
