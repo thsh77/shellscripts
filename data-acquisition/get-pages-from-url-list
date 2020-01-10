@@ -1,0 +1,38 @@
+#!/bin/bash
+# get-pages-from-urllist works on newline separated list of filenames
+
+PROGRAM=`basename "$@"`
+VERSION='1.0'
+CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DOWNLOAD_DIR=`mkdir "$CURRENT_DIR"/download`
+INPUTFILE="$1"
+
+# Start by removing any \r (carriage return) occurrences
+
+sed -i 's/\r//g' $INPUTFILE
+
+# Make newlines (\n) the only separator
+
+IFS=$'\n'
+
+# disable globbing
+
+set -f
+
+
+
+while IFS= read -r line;
+do
+  wget $line -P download`date +%Y-%m-%d.%H.%M`
+done <$INPUTFILE
+
+
+#for i in $(cat < "$1"); do
+#	echo "Henter: $i"
+#	wget "https://sproget.dk/nyheder/$i"
+#done
+
+#while IFS="" read -r p || [ -n "$p"]
+#do
+#  wget "https://sproget.dk/nyheder/$p"
+#done < nyheder-liste

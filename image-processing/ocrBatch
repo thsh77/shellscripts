@@ -35,5 +35,5 @@ for f in "$@"
 do 
 	echo "Performing OCR with tesseract on $f";
 	#b=`basename "$f" .jpg`; tesseract -l deu_frak "$f" "$b";
-	b=`basename "$f" .jpg`; tesseract "$f" "$b";
+	b=`basename "$f" .jpg`; tesseract -l dan "$f" "$b";
 done
