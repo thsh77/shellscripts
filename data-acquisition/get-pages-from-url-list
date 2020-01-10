@@ -26,6 +26,7 @@ do
   wget $line -P download`date +%Y-%m-%d.%H.%M`
 done <$INPUTFILE
 
+# tidy -asxhtml bog1.html > bog1.tidy.html
 
 #for i in $(cat < "$1"); do
 #	echo "Henter: $i"
