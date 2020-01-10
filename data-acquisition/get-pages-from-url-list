@@ -4,7 +4,7 @@
 PROGRAM=`basename "$@"`
 VERSION='1.0'
 CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DOWNLOAD_DIR=`mkdir "$CURRENT_DIR"/download`
+DOWNLOAD_DIR=$CURRENT_DIR/'download_'`date +%Y-%m-%d.%H.%M`
 INPUTFILE="$1"
 
 # Start by removing any \r (carriage return) occurrences
@@ -13,18 +13,25 @@ sed -i 's/\r//g' $INPUTFILE
 
 # Make newlines (\n) the only separator
 
-IFS=$'\n'
+#IFS=$'\n'
 
 # disable globbing
 
-set -f
+#set -f
 
 
 
-while IFS= read -r line;
+while IFS='\n' read -r line;
 do
-  wget $line -P download`date +%Y-%m-%d.%H.%M`
+  echo Now downloading $line
+  wget $line -P $DOWNLOAD_DIR
 done <$INPUTFILE
+
+#for i in $(cd $DOWNLOAD_DIR ; echo *)
+for i in `cd $DOWNLOAD_DIR ; ls *`
+do
+  echo $i 
+done 
 
 # tidy -asxhtml bog1.html > bog1.tidy.html
 
