@@ -31,7 +31,7 @@ done <$INPUTFILE
 for i in `cd $DOWNLOAD_DIR ; ls *`
 do
   echo Tidying HTML $i
-  tidy -asxhtml $1
+  tidy -asxhtml --write-back=true $1
 done 
 
 # tidy -asxhtml bog1.html > bog1.tidy.html
