@@ -30,7 +30,8 @@ done <$INPUTFILE
 #for i in $(cd $DOWNLOAD_DIR ; echo *)
 for i in `cd $DOWNLOAD_DIR ; ls *`
 do
-  echo $i 
+  echo Tidying HTML $i
+  tidy -asxhtml $1
 done 
 
 # tidy -asxhtml bog1.html > bog1.tidy.html
