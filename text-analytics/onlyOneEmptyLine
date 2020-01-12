@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Substitute multiple blank lines with one
+
+sed ':a /^\n*$/{ s/\n//; N; ba};' $1
+
+#sed \
+#  -e '/^$/{
+#N
+#/^\n$/d
+#}' 
