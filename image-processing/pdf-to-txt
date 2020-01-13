@@ -53,7 +53,10 @@ do-ocr() {
 make-textfile() {
 
   cat $SCRATCHDIR/*.txt > $INPUTFILENAME.txt
+  
+  # Reduce multiple blank lines to one
 
+  sed':a /^\n*$/{ s/\n//; N; ba};' $INPUTFILENAME.txt
 }
 
 #Usage () {
