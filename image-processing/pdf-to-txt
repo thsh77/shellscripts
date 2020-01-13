@@ -7,6 +7,7 @@
 
 PN=`basename "$0"`                      # Program name
 VER='1.0'
+INPUTFILENAME=$(basename $1)
 CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
 
@@ -40,12 +41,18 @@ convert-pages-to-jpg() {
 
 do-ocr() {
 
-  for i in `cd $SCRATCHDIR : ls *.jpg`
+  for i in `cd $SCRATCHDIR ; ls *.jpg`
   do
     echo Doing OCR on $i
     b=`basename "$i" .jpg`
     tesseract -l dan "$i" "$b";
   done
+
+}
+
+make-textfile() {
+
+  cat $SCRATCHDIR/*.txt > $INPUTFILENAME.txt
 
 }
 
@@ -95,4 +102,4 @@ do-ocr() {
 	#b=`basename "$f" .jpg`; tesseract -l dan "$f" "$b";
 #done
 
-split-pdf-in-pages $1; convert-pages-to-jpg; do-ocr
+split-pdf-in-pages $1; convert-pages-to-jpg; do-ocr ; make-textfile
