@@ -1,0 +1,98 @@
+#!/bin/bash
+# ocrBatch -- a simple shell script for doing batch OCR with
+# tesseract
+# todo: I want to be able to provide tesseract image file 
+# extensions and language parameters like deu_frak as parameters
+
+
+PN=`basename "$0"`                      # Program name
+VER='1.0'
+CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
+
+
+split-pdf-in-pages() {
+
+  # Use pdfseparate for splitting input file into separate pages
+  # and send output into temporary directory
+
+  pdfseparate $1 $SCRATCHDIR/'page_%04d.pdf'
+
+}
+
+convert-pages-to-jpg() {
+  #outputfolder=$(mkdir -p $SCRATCHDIR/outputfolder)
+
+  for i in `cd $SCRATCHDIR ; ls *`
+  do
+    echo Converting $i into jpeg
+    convert \
+      -verbose \
+      -density 150 \
+      -trim \
+      "$SCRATCHDIR/$i" \
+      -quality 100 \
+      -flatten \
+      -sharpen 0x1.0 \
+      "$SCRATCHDIR/$(basename "$SCRATCHDIR/$i" .pdf).jpg"
+  done
+}
+
+do-ocr() {
+
+  for i in `cd $SCRATCHDIR : ls *.jpg`
+  do
+    echo Doing OCR on $i
+    b=`basename "$i" .jpg`
+    tesseract -l dan "$i" "$b";
+  done
+
+}
+
+#Usage () {
+#    echo >&2 "$PN - perform OCR on multiple files with tesseract, version $VER
+#usage: $PN [-h] [file ...]"
+#    exit 1
+#}
+
+#while getopts :hv opt
+#do
+#    case "$opt" in
+#                                        # your flags here
+#        h)      Usage;;
+#        v)      echo "$PN - perform OCR on multiple files with tesseract, version $VER" >&2
+#                exit 1;;
+#     '?')    echo "$0: invalid option -$OPTARG" >&2
+#                echo "usage: $0 [-hv] [file ...]" >&2
+#           exit 1
+#           ;;
+#    esac
+#    shift
+#done
+
+#shift $((OPTIND - 1))                   #Remove options, leave arguments
+
+#convert () {
+
+#	echo "Performing OCR with tesseract on $3";
+#  convert -verbose -density 150 -trim "$3" -quality 100 -flatten -sharpen 0x1.0 "$(basename "$3" .pdf).jpg";
+
+#}
+
+#do-ocr () {
+#
+#  b=`basename "$f" .jpg`; 
+#  tesseract -l dan "$f" "$b";
+#}
+
+#for f in "$@"
+#do 
+#  convert -verbose -density 150 -trim "$f" -quality 100 -flatten \
+#  -sharpen 0x1.0 "$(basename "$f" .pdf).jpg" | tesseract -l dan 
+
+
+	#b=`basename "$f" .jpg`; tesseract -l deu_frak "$f" "$b";
+	#b=`basename "$f" .jpg`; tesseract -l dan "$f" "$b";
+#done
+
+split-pdf-in-pages $1; convert-pages-to-jpg; do-ocr
