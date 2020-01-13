@@ -9,7 +9,7 @@ INPUTFILE="$1"
 
 # Check if wget and tidy are installed
 
-command -v wget >/dev/null 2>&1 || { echo >&2 "I require tidy but it's not installed.  Aborting."; exit 1; }
+command -v wget >/dev/null 2>&1 || { echo >&2 "I require wget but it's not installed.  Aborting."; exit 1; }
 command -v tidy >/dev/null 2>&1 || { echo >&2 "I require tidy but it's not installed.  Aborting."; exit 1; }
 
 # Start by removing any \r (carriage return) occurrences
