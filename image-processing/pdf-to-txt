@@ -5,12 +5,33 @@
 # extensions and language parameters like deu_frak as parameters
 
 
-PN=`basename "$0"`                      # Program name
-VER='1.0'
-INPUTFILENAME=$(basename $1)
+PROGRAMNAME=`basename "$0"`                      # Program name
+VERSION='1.0'
+INPUTFILENAME=$(basename $1 .pdf)
 CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
 
+usage() {
+  echo >&2 "$PROGRAMNAME" - convert a PDF file into text, v"$VERSION"
+  usage: "$PROGRAMNAME" [-h] [file]
+}
+
+while getopts :hv opt
+do
+    case "$opt" in
+                                        # your flags here
+        h)      usage;;
+        v)      echo "$PROGRAMNAME - convert a PDF into text, v$VERSION" >&2
+                exit 1;;
+     '?')    echo "$0: invalid option -$OPTARG" >&2
+                echo "usage: $0 [-hv] [file ...]" >&2
+           exit 1
+           ;;
+    esac
+    shift
+done
+
+shift $((OPTIND - 1))                   #Remove options, leave arguments
 
 split-pdf-in-pages() {
 
@@ -45,7 +66,7 @@ do-ocr() {
   do
     echo Doing OCR on $i
     b=`basename "$i" .jpg`
-    tesseract -l dan "$i" "$b";
+    tesseract -l dan "$SCRATCHDIR/$i" "$SCRATCHDIR/$b";
   done
 
 }
@@ -56,53 +77,14 @@ make-textfile() {
   
   # Reduce multiple blank lines to one
 
-  sed':a /^\n*$/{ s/\n//; N; ba};' $INPUTFILENAME.txt
+  sed -i.pre-clean-backup \
+    # Remove any form feed characters
+    -e 's/\f//g' \
+    # Reduce multiple newlines to one
+    -e '/^$/{N;/^\n$/d;}' \
+    $INPUTFILENAME.txt
 }
 
-#Usage () {
-#    echo >&2 "$PN - perform OCR on multiple files with tesseract, version $VER
-#usage: $PN [-h] [file ...]"
-#    exit 1
-#}
 
-#while getopts :hv opt
-#do
-#    case "$opt" in
-#                                        # your flags here
-#        h)      Usage;;
-#        v)      echo "$PN - perform OCR on multiple files with tesseract, version $VER" >&2
-#                exit 1;;
-#     '?')    echo "$0: invalid option -$OPTARG" >&2
-#                echo "usage: $0 [-hv] [file ...]" >&2
-#           exit 1
-#           ;;
-#    esac
-#    shift
-#done
-
-#shift $((OPTIND - 1))                   #Remove options, leave arguments
-
-#convert () {
-
-#	echo "Performing OCR with tesseract on $3";
-#  convert -verbose -density 150 -trim "$3" -quality 100 -flatten -sharpen 0x1.0 "$(basename "$3" .pdf).jpg";
-
-#}
-
-#do-ocr () {
-#
-#  b=`basename "$f" .jpg`; 
-#  tesseract -l dan "$f" "$b";
-#}
-
-#for f in "$@"
-#do 
-#  convert -verbose -density 150 -trim "$f" -quality 100 -flatten \
-#  -sharpen 0x1.0 "$(basename "$f" .pdf).jpg" | tesseract -l dan 
-
-
-	#b=`basename "$f" .jpg`; tesseract -l deu_frak "$f" "$b";
-	#b=`basename "$f" .jpg`; tesseract -l dan "$f" "$b";
-#done
 
 split-pdf-in-pages $1; convert-pages-to-jpg; do-ocr ; make-textfile
