@@ -27,10 +27,10 @@ cleanup() {
   
   if [ -d "$TARGETDIR/$dirname" ]
   then
-    echo The directory $dirname already exists -- doing rsync
+    printf "The directory: \n\n $TARGETDIR/$dirname \n\n ... already exists -- doing rsync\n\n"
     rsync -av $SCRATCHDIR/$dirname/* $TARGETDIR/$dirname/
   else
-    echo Make new dir
+    printf "Making a new directory: \n\n $TARGETDIR/$dirname"
     cp -r $SCRATCHDIR/$dirname $TARGETDIR
   fi
 
