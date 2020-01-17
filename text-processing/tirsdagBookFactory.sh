@@ -3,14 +3,61 @@
 # tirsdagBookFactory produces books that fit for publishing under the
 # Tuesday Project Text Platform
 
-PROGRAM=`basename "$@"`
+EXITCODE=0
+PROGRAM=`basename "$0"`
 VERSION='1.0'
 CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
 SOURCEDIR='./'
 TARGETDIR='/home/th/Development/tirsdagsprojektet/content/books'
 STYLESHEET='/home/th/Development/textbase/tekstnet-factory/generator/xsl/generator.xsl'
+all=no
 
+error() {
+  echo "$@" 1>&2
+  usage_and_exit 1
+}
+
+usage() {
+ echo "Usage: $PROGRAM [--all] [--?] [--help] [--version] file"
+}
+
+usage_and_exit() {
+  usage
+  exit $1
+}
+
+version() {
+  echo "$PROGRAM version $VERSION"
+}
+
+warning() {
+  echo "$@" 1>&2
+  EXITCODE=`expr $EXITCODE + 1`
+}
+
+while test $# -gt 0
+do
+  case $1 in
+  --all | -a )
+    all=yes
+    ;;
+  --help | -h )
+    usage_and_exit 0
+    ;;
+  --version | -v )
+    version
+    exit 0
+    ;;
+  -*)
+    error "Unrecognized option: $1"
+    ;;
+  *)
+    break
+    ;;
+  esac
+shift
+done
 
 transform() {
   java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
@@ -27,9 +74,15 @@ cleanup() {
   
   if [ -d "$TARGETDIR/$dirname" ]
   then
-    printf "The directory: \n\n $TARGETDIR/$dirname \n\n ... already exists -- doing rsync\n\n"
-    rsync -av $SCRATCHDIR/$dirname/* $TARGETDIR/$dirname/
-  else
+    if test "$all" = "yes" 
+    then 
+      printf "Doing a full rsync of files to directory: \n\n $TARGETDIR/$dirname \n\n"
+      rsync -av $SCRATCHDIR/$dirname/* $TARGETDIR/$dirname/
+    else
+      printf "Doing partial rsync -- HTML files only -- to directory: \n\n $TARGETDIR/$dirname \n\n"
+      rsync -av $SCRATCHDIR/$dirname/*.html $TARGETDIR/$dirname/
+    fi
+    else
     printf "Making a new directory: \n\n $TARGETDIR/$dirname"
     cp -r $SCRATCHDIR/$dirname $TARGETDIR
   fi
