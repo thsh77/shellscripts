@@ -10,7 +10,7 @@ CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
 SOURCEDIR='./'
 TARGETDIR='/home/th/Development/tirsdagsprojektet/content/letters'
-STYLESHEET='/home/th/Development/textbase/tekstnet-factory/generator/xsl/generator.xsl'
+STYLESHEET='/home/th/Development/textbase/tekstnet-factory/generator/xsl/letter.xsl'
 all=no
 
 error() {
