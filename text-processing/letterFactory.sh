@@ -61,9 +61,9 @@ done
 
 transform() {
   java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
-    -s:"$1" \
+    -s:"$i" \
     -xsl:$STYLESHEET \
-    -o:"$SCRATCHDIR/test"
+    -o:"$SCRATCHDIR/$(basename "$i" .xml).html"
 }
 
 
@@ -90,4 +90,7 @@ cleanup() {
   rm -r $SCRATCHDIR;
 }
 
-transform $1 && cleanup 
+for i in "$@"
+do
+  transform
+done
