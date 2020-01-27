@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# tirsdagBookFactory produces books that fit for publishing under the
+# tirsdagBookFactory produces books that are fit for publishing under the
 # Tuesday Project Text Platform
 
 EXITCODE=0
