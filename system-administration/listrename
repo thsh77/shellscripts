@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# listrename renames files on the basis of a substitution list. An
+# example;
+#
+# ./listrename substitutionlist *.jpg
+#
+# List format of substitution list:
+#
+# s/E1.jpg/a_1r.jpg/
+# s/E2.jpg/a_1v.jpg/
+# s/E3.jpg/a_2r.jpg/
+# s/E4.jpg/a_2v.jpg/
+# s/E5.jpg/a_3r.jpg/
+#
+
+for i in "$@"; do
+  echo Converting filname$i to a file;
+  newfile="$(echo $i | sed -f "$1")";
+  cp "$i" "$newfile";
+done
+
