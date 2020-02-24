@@ -2,15 +2,21 @@
 
 # tirsdagBookFactory produces books that fit for publishing under the
 # Tuesday Project Text Platform
-
 EXITCODE=0
 PROGRAM=`basename "$0"`
 VERSION='1.0'
-CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
+COUNTER=0
+numfiles=(*)
+numfiles=${#numfiles[@]}
+CURRENT_DIR="$( pwd )"
+DIRNAME=`basename "$CURRENT_DIR"`
 SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
+DIRECTORY=`cd $SCRATCHDIR && mkdir $DIRNAME`
 SOURCEDIR='./'
 TARGETDIR='/home/th/Development/tirsdagsprojektet/content/letters'
 STYLESHEET='/home/th/Development/textbase/tekstnet-factory/generator/xsl/letter.xsl'
+TESTDIR=`dirname "$i"`
 all=no
 
 error() {
@@ -63,24 +69,22 @@ transform() {
   java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
     -s:"$i" \
     -xsl:$STYLESHEET \
-    -o:"$SCRATCHDIR/$(basename "$i" .xml).html"
+    -o:$SCRATCHDIR/$DIRNAME/$(basename "$i" .xml).html
+   # -o:"$SCRATCHDIR/$(basename "$i" .xml).html"
 }
 
 
 cleanup() {
 
-  #Get directory name from temporary dir
-  dirname=`ls $SCRATCHDIR`
-  
-  if [ -d "$TARGETDIR/$dirname" ]
+  if [ -d "$TARGETDIR/$DIRNAME" ]
   then
     if test "$all" = "yes" 
     then 
-      printf "Doing a full rsync of files to directory: \n\n $TARGETDIR/$dirname \n\n"
-      rsync -av $SCRATCHDIR/$dirname/* $TARGETDIR/$dirname/
+      printf "Doing a full rsync of files to directory: \n\n $TARGETDIR/$DIRNAME \n\n"
+      rsync -av $SCRATCHDIR/$DIRNAME/* $TARGETDIR/$DIRNAME/
     else
-      printf "Doing partial rsync -- HTML files only -- to directory: \n\n $TARGETDIR/$dirname \n\n"
-      rsync -av $SCRATCHDIR/$dirname/*.html $TARGETDIR/$dirname/
+      printf "Doing partial rsync -- HTML files only -- to directory: \n\n $TARGETDIR/$DIRNAME \n\n"
+      rsync -av $SCRATCHDIR/$DIRNAME/*.html $TARGETDIR/$DIRNAME/
     fi
     else
     printf "Making a new directory: \n\n $TARGETDIR/$dirname"
@@ -92,5 +96,9 @@ cleanup() {
 
 for i in "$@"
 do
-  transform
+  COUNTER=$((COUNTER+1));
+  echo Now transforming "$i" "($COUNTER" of "$numfiles)"
+  transform; 
 done
+
+cleanup
