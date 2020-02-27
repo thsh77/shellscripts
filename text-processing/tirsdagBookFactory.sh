@@ -6,7 +6,8 @@
 EXITCODE=0
 PROGRAM=`basename "$0"`
 VERSION='1.0'
-CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
+#CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_DIR="$( pwd )"
 SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
 SOURCEDIR='./'
 TARGETDIR='/home/th/Development/tirsdagsprojektet/content/books'

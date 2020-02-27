@@ -87,8 +87,8 @@ cleanup() {
       rsync -av $SCRATCHDIR/$DIRNAME/*.html $TARGETDIR/$DIRNAME/
     fi
     else
-    printf "Making a new directory: \n\n $TARGETDIR/$dirname"
-    cp -r $SCRATCHDIR/$dirname $TARGETDIR
+    printf "Making a new directory: \n\n $TARGETDIR/$DIRNAME"
+    cp -r $SCRATCHDIR/$DIRNAME $TARGETDIR
   fi
 
   rm -r $SCRATCHDIR;
