@@ -25,6 +25,6 @@ cleanup() {
 
 for i in "$@"
 do
-  transform | cleanup | par 
+  transform | cleanup | par > $(basename "$i" .xml).text
 done
 
