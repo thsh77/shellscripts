@@ -11,7 +11,7 @@ CURRENT_DIR="$( pwd )"
 SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
 SOURCEDIR='./'
 TARGETDIR='/home/th/Development/tirsdagsprojektet/content/books'
-STYLESHEET='/home/th/Development/textbase/tekstnet-factory/generator/xsl/generator.xsl'
+STYLESHEET='/home/th/Development/tirsdag-text-factory/xsl/xsl/generator.xsl'
 all=no
 
 error() {

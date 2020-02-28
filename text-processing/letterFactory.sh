@@ -15,7 +15,7 @@ SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
 DIRECTORY=`cd $SCRATCHDIR && mkdir $DIRNAME`
 SOURCEDIR='./'
 TARGETDIR='/home/th/Development/tirsdagsprojektet/content/letters'
-STYLESHEET='/home/th/Development/textbase/tekstnet-factory/generator/xsl/letter.xsl'
+STYLESHEET='/home/th/Development/tirsdag-text-factory/xsl/letter.xsl'
 TESTDIR=`dirname "$i"`
 all=no
 
