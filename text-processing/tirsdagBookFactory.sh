@@ -11,7 +11,7 @@ CURRENT_DIR="$( pwd )"
 SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
 SOURCEDIR='./'
 TARGETDIR='/home/th/Development/tirsdagsprojektet/content/books'
-STYLESHEET='/home/th/Development/tirsdag-text-factory/xsl/xsl/generator.xsl'
+STYLESHEET='/home/th/Development/tirsdag-text-factory/xsl/generator.xsl'
 all=no
 
 error() {
@@ -67,6 +67,33 @@ transform() {
     -o:"$SCRATCHDIR/test"
 }
 
+create-colophon() {
+
+  dirname=`ls $SCRATCHDIR`
+  
+  # Make the Danish colophon
+  touch $SCRATCHDIR/$dirname/colophon.md
+
+  TEMPLATE="\n---
+  \ntitle: kolofon
+  \nlayout: colophon
+  \n---
+  "
+
+  echo -e $TEMPLATE | tee -a $SCRATCHDIR/$dirname/colophon.md
+
+  # Make the English colophon
+  touch $SCRATCHDIR/$dirname/colophon.en.md
+
+  TEMPLATE="\n---
+  \ntitle: colophon
+  \nlayout: colophon
+  \n---
+  "
+
+  echo -e $TEMPLATE | tee -a $SCRATCHDIR/$dirname/colophon.en.md
+
+}
 
 cleanup() {
 
@@ -91,4 +118,4 @@ cleanup() {
   rm -r $SCRATCHDIR;
 }
 
-transform $1 && cleanup 
+transform $1 && create-colophon && cleanup 
