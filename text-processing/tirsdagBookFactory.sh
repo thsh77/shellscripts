@@ -65,14 +65,16 @@ transform() {
     -s:"$1" \
     -xsl:$STYLESHEET \
     -o:"$SCRATCHDIR/test"
+
+  #rm $SCRATCHDIR/test
 }
 
 create-colophon() {
 
-  dirname=`ls $SCRATCHDIR`
+#  dirname=`ls $SCRATCHDIR`
   
   # Make the Danish colophon
-  touch $SCRATCHDIR/$dirname/colophon.md
+  touch $SCRATCHDIR/colophon.md
 
   TEMPLATE="\n---
   \ntitle: kolofon
@@ -80,10 +82,10 @@ create-colophon() {
   \n---
   "
 
-  echo -e $TEMPLATE | tee -a $SCRATCHDIR/$dirname/colophon.md
+  echo -e $TEMPLATE | tee -a $SCRATCHDIR/colophon.md
 
   # Make the English colophon
-  touch $SCRATCHDIR/$dirname/colophon.en.md
+  touch $SCRATCHDIR/colophon.en.md
 
   TEMPLATE="\n---
   \ntitle: colophon
@@ -91,7 +93,7 @@ create-colophon() {
   \n---
   "
 
-  echo -e $TEMPLATE | tee -a $SCRATCHDIR/$dirname/colophon.en.md
+  echo -e $TEMPLATE | tee -a $SCRATCHDIR/colophon.en.md
 
 }
 
@@ -99,6 +101,7 @@ cleanup() {
 
   #Get directory name from temporary dir
   dirname=`ls $SCRATCHDIR`
+  echo $dirname
   
   if [ -d "$TARGETDIR/$dirname" ]
   then
@@ -110,7 +113,7 @@ cleanup() {
       printf "Doing partial rsync -- HTML files only -- to directory: \n\n $TARGETDIR/$dirname \n\n"
       rsync -av $SCRATCHDIR/$dirname/*.html $TARGETDIR/$dirname/
     fi
-    else
+  else
     printf "Making a new directory: \n\n $TARGETDIR/$dirname"
     cp -r $SCRATCHDIR/$dirname $TARGETDIR
   fi
@@ -118,4 +121,4 @@ cleanup() {
   rm -r $SCRATCHDIR;
 }
 
-transform $1 && create-colophon && cleanup 
+transform $1 && cleanup

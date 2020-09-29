@@ -5,35 +5,51 @@
 # extensions and language parameters like deu_frak as parameters
 
 
-PN=`basename "$0"`                      # Program name
+PN=$(basename "$0")                      # Program name
 VER='1.0'
+OUTPUTDIR=${PWD##*/}_text_`date +%Y-%m-%d`
+
+mkdir $OUTPUTDIR
+
+language='eng'
 
 Usage () {
-    echo >&2 "$PN - perform OCR on multiple files with tesseract, version $VER
-usage: $PN [-h] [file ...]"
-    exit 1
+  echo >&2 "$PN - perform OCR on multiple files with tesseract, version $VER
+  usage: $PN [-h] [file ...]"
+  exit 1
 }
 
-while getopts :hv opt
+
+while getopts ":l:hv" opt
 do
-    case "$opt" in
-                                        # your flags here
-        h)      Usage;;
-        v)      echo "$PN - perform OCR on multiple files with tesseract, version $VER" >&2
-                exit 1;;
-        '?')    echo "$0: invalid option -$OPTARG" >&2
-                echo "usage: $0 [-hv] [file ...]" >&2
-           exit 1
-           ;;
-    esac
-    shift
+  case "$opt" in
+    l)  
+      #echo "-l passed ${OPTARG}" >&2
+      new_language=${OPTARG}
+      ;;
+    \?)
+      echo "Invalid option: -${OPTARG}" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -${OPTARG} requires an argument" >&2
+      exit 1
+      ;;
+    h)      Usage;;
+    v)      echo "$PN - perform OCR on multiple files with tesseract, version $VER" >&2
+      exit 1;;
+    '?')    echo "$0: invalid option -${OPTARG}" >&2
+      echo "usage: $0 [-hv] [file ...]" >&2
+      exit 1
+      ;;
+  esac
 done
 
 shift $((OPTIND - 1))                   #Remove options, leave arguments
 
 for f in "$@"
 do 
-	echo "Performing OCR with tesseract on $f";
-	#b=`basename "$f" .jpg`; tesseract -l deu_frak "$f" "$b";
-	b=`basename "$f" .jpg`; tesseract -l dan "$f" "$b";
+  echo "Doing OCR with tesseract (language: ${new_language}) on ${f}";
+  b=$(basename ${f%.*}); tesseract -l "${new_language}" "${f}" "${OUTPUTDIR}/${b}";
 done
+

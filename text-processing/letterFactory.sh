@@ -70,9 +70,36 @@ transform() {
     -s:"$i" \
     -xsl:$STYLESHEET \
     -o:$SCRATCHDIR/$DIRNAME/$(basename "$i" .xml).html
-   # -o:"$SCRATCHDIR/$(basename "$i" .xml).html"
+    #-o:"$SCRATCHDIR/$(basename "$i" .xml).html"
 }
 
+create-colophon() {
+
+  dirname=`ls $SCRATCHDIR`
+  
+  # Make the Danish colophon
+  touch $SCRATCHDIR/$dirname/colophon.md
+
+  TEMPLATE="\n---
+  \ntitle: kolofon
+  \nlayout: colophon
+  \n---
+  "
+
+  echo -e $TEMPLATE | tee -a $SCRATCHDIR/$dirname/colophon.md
+
+  # Make the English colophon
+  touch $SCRATCHDIR/$dirname/colophon.en.md
+
+  TEMPLATE="\n---
+  \ntitle: colophon
+  \nlayout: colophon
+  \n---
+  "
+
+  echo -e $TEMPLATE | tee -a $SCRATCHDIR/$dirname/colophon.en.md
+
+}
 
 cleanup() {
 
@@ -91,7 +118,7 @@ cleanup() {
     cp -r $SCRATCHDIR/$DIRNAME $TARGETDIR
   fi
 
-  rm -r $SCRATCHDIR;
+  #rm -r $SCRATCHDIR;
 }
 
 for i in "$@"
