@@ -1,9 +1,9 @@
 #!/bin/bash
 # ocrBatch -- a simple shell script for doing batch OCR with
-# tesseract
-# todo: I want to be able to provide tesseract image file 
-# extensions and language parameters like deu_frak as parameters
-
+# tesseract. An example of its usage is:
+#
+# ocrBatch -l dan *.tif
+#
 
 PN=$(basename "$0")                      # Program name
 VER='1.0'
@@ -25,7 +25,7 @@ do
   case "$opt" in
     l)  
       #echo "-l passed ${OPTARG}" >&2
-      new_language=${OPTARG}
+      language=${OPTARG}
       ;;
     \?)
       echo "Invalid option: -${OPTARG}" >&2
@@ -68,7 +68,7 @@ main () {
   for f in "$@"
 do 
   echo "Doing OCR with tesseract (language: ${new_language}) on ${f}";
-  b=$(basename ${f%.*}); tesseract -l "${new_language}" "${f}" "${OUTPUTDIR}/${b}";
+  b=$(basename ${f%.*}); tesseract -l "${language}" "${f}" "${OUTPUTDIR}/${b}";
 done
 }
 
