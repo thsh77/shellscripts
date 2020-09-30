@@ -7,7 +7,7 @@
 
 PN=$(basename "$0")                      # Program name
 VER='1.0'
-OUTPUTDIR=${PWD##*/}_text_`date +%Y-%m-%d`
+OUTPUTDIR=${PWD##*/}-scan_`date +%Y-%m-%d_%H_%M`
 
 mkdir $OUTPUTDIR
 
@@ -47,9 +47,23 @@ done
 
 shift $((OPTIND - 1))                   #Remove options, leave arguments
 
+textconcat () {
+
+  # Append from each text-file first a pb header with filename, then
+  # the text itself to 
+
+  find $OUTPUTDIR -type f -name "*.txt" -print | \
+    while read filename
+    do
+      echo '<pb facs="'$(basename ${filename%.*})'"/>'
+      cat "$filename"
+    done > "$OUTPUTDIR/$OUTPUTDIR"_fulltext
+}
+
 for f in "$@"
 do 
   echo "Doing OCR with tesseract (language: ${new_language}) on ${f}";
   b=$(basename ${f%.*}); tesseract -l "${new_language}" "${f}" "${OUTPUTDIR}/${b}";
 done
 
+textconcat
