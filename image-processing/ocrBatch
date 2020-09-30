@@ -51,19 +51,26 @@ textconcat () {
 
   # Append from each text-file first a pb header with filename, then
   # the text itself to 
-
-  find $OUTPUTDIR -type f -name "*.txt" -print | \
-    while read filename
-    do
-      echo '<pb facs="'$(basename ${filename%.*})'"/>'
-      cat "$filename"
-    done > "$OUTPUTDIR/$OUTPUTDIR"_fulltext
+  for f in $(ls $OUTPUTDIR/*.txt)
+  do
+    echo '<pb facs="'$(basename ${f%.*})'"/>'
+    cat "$f"
+  done > "$OUTPUTDIR/$OUTPUTDIR"_fulltext
+  #find $OUTPUTDIR -type f -name "*.txt" -print | \
+  #while read filename
+  #  do
+  #    echo '<pb facs="'$(basename ${filename%.*})'"/>'
+  #    cat "$filename"
+  #  done > "$OUTPUTDIR/$OUTPUTDIR"_fulltext
 }
 
-for f in "$@"
+main () {
+  for f in "$@"
 do 
   echo "Doing OCR with tesseract (language: ${new_language}) on ${f}";
   b=$(basename ${f%.*}); tesseract -l "${new_language}" "${f}" "${OUTPUTDIR}/${b}";
 done
+}
 
+main $@; 
 textconcat
