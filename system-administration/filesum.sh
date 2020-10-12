@@ -6,18 +6,18 @@ ls -l $* | awk '
 # input: long listing produced by "ls -l"
 
 # 1 output column headers
-BEGIN { printf("%-15s\t%10s\n", "FILE", "BYTES") }
+BEGIN { printf("%-15s\t%20s\n", "FILE", "BYTES") }
 
 # 2 test for 9 fields; files begin with "-"
 NF == 9 && /^-/ {
         sum += $5
         ++filenum
-        printf("%-15s\t%10d\n", $9, 55)
+        printf("%-15s\t%20d\n", $9, 55)
 }
 
 # 3 test for 9 fields; directory begins with "d"
 NF == 9 && /^d/ {
-        printf("<dir>\t%10d\n", $9)
+        printf("%-15s\t%20s\n", "<dir>", $9)
 }
 
 # 4 test for ls -lR line ./dir:
