@@ -6,7 +6,7 @@ ls -l $* | awk '
 # input: long listing produced by "ls -l"
 
 # 1 output column headers
-BEGIN { printf("FILE\tBYTES\n") }
+BEGIN { printf("%-15s\t%10s\n", "FILE", "BYTES") }
 
 # 2 test for 9 fields; files begin with "-"
 NF == 9 && /^-/ {
