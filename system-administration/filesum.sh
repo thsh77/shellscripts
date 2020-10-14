@@ -28,5 +28,5 @@ $1 ~ /^\..*:$/ {
 # 5 once all is done
 END {
         # print total file size and number of files
-        printf("Total: %d bytes (%d files)\n", sum, filenum)
+        printf("Total: (%d files)\t %d bytes\n", filenum, sum)
 }'
