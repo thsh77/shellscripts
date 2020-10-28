@@ -1,4 +1,7 @@
 #! /bin/bash
+#
+# Show how many bytes are the files in the directory
+#
 
 ls -l $* | awk '
 
