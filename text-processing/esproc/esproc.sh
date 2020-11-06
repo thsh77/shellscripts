@@ -5,6 +5,15 @@
 #
 
 
+parse_yaml () {
+  local prefix=$2
+  local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @ | tr @ '\034')
+  sed -ne "s/^\($s\):/\1/" \
+       -e "s/^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$/\1$fs\2$fs\3/p" \
+       -e "s/^\($s\)\($w\)$s:$s\(.*\)$s\$/\1$fs\2$fs\3/p" $1
+
+}
+
 make_index () {
 
   awk '
@@ -40,7 +49,8 @@ worktitle=$(awk '
 
 find $1 -type f -name '*[0-9].html' | sort |
 while read file
-do 
+do
+  #parse_yaml
   echo "doc$((i++))"" = {"
   echo $worktitle
   awk '
@@ -48,11 +58,11 @@ do
     /^title/ { print "\"chapter\" : "$2 }
     ' $file
   #cat $1/_index.md
-  #make_index
+  #make_index $file
   printf "\n}\n"
 done
 
-echo $te
+#echo $te
 #find $1 -type f -name '_index.md'
 #while read file
 ##do
