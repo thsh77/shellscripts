@@ -5,66 +5,25 @@
 #
 
 
-parse_yaml () {
-  local prefix=$2
-  local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @ | tr @ '\034')
-  sed -ne "s/^\($s\):/\1/" \
-       -e "s/^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$/\1$fs\2$fs\3/p" \
-       -e "s/^\($s\)\($w\)$s:$s\(.*\)$s\$/\1$fs\2$fs\3/p" $1
-
-}
-
-make_index () {
-
-  awk '
-
-  function document_id(file, a, n){
-    n = split(file, a, "/")
-    work_id = a[n-1]
-    filename = a[n]
-    sub(".html", "", filename)
-    printf("  \"id\" : \"%s_%s\"", work_id, filename)
-  }
-
-
-  /title/ {
-    print 'title' 
-  }
-  
-  #END { document_id($file) }
-  '
-}
-
-#find $1 -type f -name '_index.md'
-#while read file
-#do
-#  #title=$(awk '/title/ {print $0}' $file)
-#  echo "HEJ"
-#done
-
-worktitle=$(awk '
-  BEGIN { FS = ":" }
-  /^title/ {print "\"title\" : "$2 }
-  ' $1/_index.md)
+shopt -s extglob
 
 find $1 -type f -name '*[0-9].html' | sort |
+
 while read file
 do
-  #parse_yaml
-  echo "doc$((i++))"" = {"
-  echo $worktitle
-  awk '
-  BEGIN { FS = ":" }
-    /^title/ { print "\"chapter\" : "$2 }
-    ' $file
-  #cat $1/_index.md
-  #make_index $file
+  # Count the docs, but start from 1
+  #echo "doc$((i+++1))"" = {"
+
+  work_id=$(        dirname ${file##./})_$(basename ${file%.*})
+  work_title=$(     awk -F ":" '/^title:/ {print $2}' $1/_index.md)
+  chapter_title=$(  awk -F ":" '/^title/ {print $2}' $file)
+  view=$(           awk '/<div/,0 {printf $0}' $file)
+  printf "{"index" : { "_index" : "test", "_type" : "type1", "_id" : \"$((i+++1))\" }}"
+  printf "\n{"
+  printf "\t\"%s\" : \"%s\" , " work_id $work_id
+  printf "\t\"%s\" : %s , " work_title "$work_title"
+  printf "\t\"%s\" : %s , " chapter_title "$chapter_title"
+  printf "\t\"%s\" : %s  " view \"\"\""$view"\"\"\"
   printf "\n}\n"
 done
 
-#echo $te
-#find $1 -type f -name '_index.md'
-#while read file
-##do
-#  echo HEJ
-#done
