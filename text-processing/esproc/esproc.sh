@@ -17,13 +17,14 @@ do
   work_id=$(        dirname ${file##./})_$(basename ${file%.*})
   work_title=$(     awk -F ":" '/^title:/ {print $2}' $1/_index.md)
   chapter_title=$(  awk -F ":" '/^title/ {print $2}' $file)
-  view=$(           awk '/<div/,0 {printf $0}' $file)
-  printf "{"index" : { "_index" : "test", "_type" : "type1", "_id" : \"$((i+++1))\" }}"
+  text_block=$(     awk '/<div/,0 {printf $0}' $file)
+  view=$(awk -v RS='<[^>]+>' -v ORS='' 'NR > 5 {m=1} m' $file)
+  printf "{\"index\":{ \"_id\" : \"$((i+++1))\"}}"
   printf "\n{"
-  printf "\t\"%s\" : \"%s\" , " work_id $work_id
-  printf "\t\"%s\" : %s , " work_title "$work_title"
-  printf "\t\"%s\" : %s , " chapter_title "$chapter_title"
-  printf "\t\"%s\" : %s  " view \"\"\""$view"\"\"\"
+  printf "\t\"%s\":\"%s\"," work_id $work_id
+  printf "\t\"%s\":%s," work_title "$work_title"
+  printf "\t\"%s\":%s," chapter_title "$chapter_title"
+  printf "\t\"%s\":%s" view \""$view"\"
   printf "\n}\n"
 done
 
