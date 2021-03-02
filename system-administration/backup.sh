@@ -3,7 +3,10 @@
 # Script to backup personal files to an external USB drive.
 # Specify mount point here (DO NOT end mount_point with a forward
 # slash.
+# To restore from backup
+# cp --archive /media/th/Backup3/home/th/. /home/th/
 
+# Define a mountpoint
 mount_point="/media/th/Backup3"
 
 echo "######"
