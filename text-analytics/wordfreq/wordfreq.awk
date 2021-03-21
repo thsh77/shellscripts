@@ -1,9 +1,7 @@
-# ordfrekvens.awk -- print liste over ordfrekvenser i en tekstfil
+# wordfreq.awk -- print list of most frequent words while disregarding
+# stopwords
 # 
-# awk -f ordfrekvens.awk inputfil.txt
-
-#@load "readfile"
-# Cf https://stackoverflow.com/a/32747544/8860865
+# Usage: awk -f wordfreq.awk stopwords textfile
 
 NR==FNR {
   stopwords[$0]
@@ -22,7 +20,7 @@ NR==FNR {
 }
 
 END {
-  # sortér forekomster efter hyppighed
+  # reverse sort frequency list based on second column
   sort = "sort -k 2nr"
 
   for(w in frq)
