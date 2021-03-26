@@ -50,6 +50,10 @@ do
     version
     exit 0
     ;;
+  --test | -t )
+    TARGETDIR='/home/th/Development/dl_develop/content/books'
+    #exit 0
+    ;;
   -*)
     error "Unrecognized option: $1"
     ;;
