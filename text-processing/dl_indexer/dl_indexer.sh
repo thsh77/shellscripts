@@ -8,7 +8,7 @@
 ############################################################
 
 
-PROGRAM=`basename $0`
+PROGRAM=$(basename "$0")
 VERSION=1.0
 EXITCODE=0
 
@@ -16,6 +16,22 @@ EXITCODE=0
 version(){
   echo "$PROGRAM version $VERSION"
 }
+
+
+outfile=
+
+while getopts :o opt
+do
+  case $opt in
+     o)  outfile="$2"
+      ;;
+    '?')  echo "ERROR" >&2
+      exit 1
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
 
 for dir in $(find "$@" -type d )
 do
@@ -60,10 +76,10 @@ do
   for i in $(find "$dir" -type f -name "*[0-9].html")
   do
     # Retrieve path name excluding the /content part
-    path=$(dirname ${i#content/})/$(basename ${i%.*})
+    path=$(dirname "${i#content/}")/$(basename "${i%.*}")
     
     # Retrieve YAML header
-    partheader=$(awk '/---/{f=!f; next}f' $i | yq -j read -)
+    partheader=$(awk '/---/{f=!f; next}f' "$i" | yq -j read -)
     
     # Retrieve text view
     view=$(
@@ -85,7 +101,9 @@ do
     
     # Integrate workinfo in textobject
     textobject=$(jq -s '.[0] + .[1]' <(echo "$workinfo") <(echo "$textobject") )
-    echo $textobject
+    echo "$textobject"
+    ##touch testfile
+    echo "$textobject" >> $outfile
 
   done
 
