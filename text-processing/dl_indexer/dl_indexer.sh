@@ -15,7 +15,7 @@ version(){
   echo "$PROGRAM version $VERSION"
 }
 
-
+count=1
 outfile=
 
 while getopts :o opt
@@ -102,8 +102,9 @@ do
 
     # Integrate workinfo in textobject
     textobject=$(jq -s '.[0] + .[1]' <(echo "$workinfo") <(echo "$textobject") )
-    
-    echo "$textobject" >> "$outfile"
+    printf "{\"index\":{\"_type\": \"book\", \"_id\": %d}}\n" "$count" >> "$outfile"
+    echo "$textobject" | jq -c - >> "$outfile"
+    ((count++))
 
   done <   <(find "$dir" -type f -name "*[0-9].html")
 
