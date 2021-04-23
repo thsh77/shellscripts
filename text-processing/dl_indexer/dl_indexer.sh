@@ -1,5 +1,4 @@
 #!/bin/bash
-
 ###########################################################
 #
 # testing: ./tst.sh content/books/brahe-t_de-nova-stella
@@ -10,7 +9,6 @@
 
 PROGRAM=$(basename "$0")
 VERSION=1.0
-EXITCODE=0
 
 
 version(){
@@ -33,31 +31,31 @@ done
 
 shift $((OPTIND - 1))
 
-for dir in $(find "$@" -type d )
+
+# Loop over directories with texts to index
+
+while IFS= read -r dir
 do
-  #path=$(dirname ${f##./})/$(basename ${f%.*})
-  #echo $path
+  #let count++
+  #echo "Playing "$dir" no $count"
   if [ -e "$dir/_index.md" ]
   then
-    echo "File '_index.md' exists; now get the header"
+    echo "Processing" "$dir"
 
-    # Get the YAML header from the index file, and pipe it through yq
-    # to convert output to JSON
+    # Get YAML header from _index.md file, and convert to JSON
     header=$(awk '/---/{f=!f; next}f' "$dir/_index.md" | yq -j read -)
-    #echo "Printing header:"
-    #echo "$header"
 
     # Extract basic workinfo from _index.md file
     workinfo=$( jq -c '{
-    worktitle: .["title"], 
-    authors, 
-    editors, 
+    worktitle: .["title"],
+    authors,
+    editors,
     periods,
-    languages, 
-    series, 
+    languages,
+    series,
     tags }' <<< "$header")
 
-  else 
+  else
     echo "Fatal: _index.md in $dir does not exist"
     exit 1
   fi
@@ -67,44 +65,46 @@ do
 
   if [ -f "$dir/001.html" ]
   then
-    echo "There's content to index"
+    echo "Content to index..."
   else
     echo "Fatal: in $dir there's nothing to index"
     exit 1
   fi
 
-  for i in $(find "$dir" -type f -name "*[0-9].html")
+  # Process files in directories
+  while read -r file
   do
     # Retrieve path name excluding the /content part
-    path=$(dirname "${i#content/}")/$(basename "${i%.*}")
-    
+    path=$(dirname "${file#content/}")/$(basename "${file%.*}")
+    echo "Now indexing: " "$path"
+
     # Retrieve YAML header
-    partheader=$(awk '/---/{f=!f; next}f' "$i" | yq -j read -)
-    
+    partheader=$(awk '/---/{f=!f; next}f' "$file" | yq -j read -)
+
     # Retrieve text view
     view=$(
     awk '
+      # Strip HTML markup with GNU awks RS (Record Separator) variable
       BEGIN { RS = "([A|N]</button>|<[^>]+>|\\||{{% images/figure %}})"
-              ORS=" "
+              ORS=""
       }
       NR > 5 {
               m = 1
               gsub(/[ \t\n]+/, " ")
       } m
-        ' "$i")
-    
+        ' "$file")
+
     # Integrate partheader in a textobject
     textobject=$(jq -c  --arg workinfo "$workinfo" \
                     --arg path "$path" \
                     --arg view "$view" \
                     '. + {path: $path, view: $view}' <<< "$partheader")
-    
+
     # Integrate workinfo in textobject
     textobject=$(jq -s '.[0] + .[1]' <(echo "$workinfo") <(echo "$textobject") )
-    echo "$textobject"
-    ##touch testfile
-    echo "$textobject" >> $outfile
+    
+    echo "$textobject" >> "$outfile"
 
-  done
+  done <   <(find "$dir" -type f -name "*[0-9].html")
 
-done
+done <   <(find "$@" -type d) 
