@@ -102,8 +102,8 @@ do
 
     # Integrate workinfo in textobject
     textobject=$(jq -s '.[0] + .[1]' <(echo "$workinfo") <(echo "$textobject") )
-    printf "{\"index\":{\"_type\": \"book\", \"_id\": %d}}\n" "$count" >> "$outfile"
-    echo "$textobject" | jq -c - >> "$outfile"
+    printf "{\"index\":{\"_type\": \"_doc\", \"_id\": %d}}\n" "$count" >> "$outfile"
+    echo "$textobject" | jq -c >> "$outfile"
     ((count++))
 
   done <   <(find "$dir" -type f -name "*[0-9].html")
