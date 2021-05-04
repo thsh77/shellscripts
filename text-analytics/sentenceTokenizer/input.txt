@@ -1,0 +1,5 @@
+Her kommer f.eks. bl.a. en test-tekst, som skal bruges til at teste en
+sætningstokenizer. Som jeg vil implementere i awk. Meningen er at hver
+sætning skal stå på en linje. SÅ hver gang, jeg støder på et komma,
+skal tokenizeren i forb. m. denne være ligeglad; til gengæld skal den virke, når der er
+et punktum. Eller et udråbstegn! Eller et spørgsmålstegn?
