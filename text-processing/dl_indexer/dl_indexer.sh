@@ -66,6 +66,9 @@ do
   if [ -f "$dir/001.html" ]
   then
     echo "Content to index..."
+  elif [ -f "$dir/_index.md" ]
+  then
+    echo "Letters to index..."
   else
     echo "Fatal: in $dir there's nothing to index"
     exit 1
@@ -80,6 +83,7 @@ do
 
     # Retrieve YAML header
     partheader=$(awk '/---/{f=!f; next}f' "$file" | yq -j read -)
+    
 
     # Retrieve text view
     view=$(
