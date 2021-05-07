@@ -1,7 +1,7 @@
 #!/bin/bash
 ###########################################################
 #
-# testing: ./tst.sh content/books/brahe-t_de-nova-stella
+# Usage: ./dl_indexer.sh -o output.json content/books/brahe-t_de-nova-stella
 #
 #
 ############################################################
@@ -78,6 +78,7 @@ do
   while read -r file
   do
     # Retrieve path name excluding the /content part
+    doc_id=$(dirname "${file#content/}")_$(basename "${file%.*}")
     path=$(dirname "${file#content/}")/$(basename "${file%.*}")
     echo "Now indexing: " "$path"
 
@@ -100,9 +101,10 @@ do
 
     # Integrate partheader in a textobject
     textobject=$(jq -c  --arg workinfo "$workinfo" \
+                    --arg doc_id "$doc_id" \
                     --arg path "$path" \
                     --arg view "$view" \
-                    '. + {path: $path, view: $view}' <<< "$partheader")
+                    '. + {doc_id: $doc_id, path: $path, view: $view}' <<< "$partheader")
 
     # Integrate workinfo in textobject
     textobject=$(jq -s '.[0] + .[1]' <(echo "$workinfo") <(echo "$textobject") )
