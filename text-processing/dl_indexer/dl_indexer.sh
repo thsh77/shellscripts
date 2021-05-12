@@ -57,7 +57,8 @@ do
 
   else
     echo "Fatal: _index.md in $dir does not exist"
-    exit 1
+    #exit 1
+    continue
   fi
 
   # Process HTML files constituting chapters and parts of the texts in
@@ -71,7 +72,8 @@ do
     echo "Letters to index..."
   else
     echo "Fatal: in $dir there's nothing to index"
-    exit 1
+    #exit 1
+    continue
   fi
 
   # Process files in directories
@@ -93,7 +95,8 @@ do
       BEGIN { RS = "([A|N]</button>|<[^>]+>|\\||{{% images/figure %}})"
               ORS=""
       }
-      NR > 5 {
+      # Whnn over the first line, start indexing
+      NR > 1 {
               m = 1
               gsub(/[ \t\n]+/, " ")
       } m
