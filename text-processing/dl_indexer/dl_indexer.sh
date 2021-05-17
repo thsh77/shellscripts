@@ -53,7 +53,9 @@ do
     periods,
     languages,
     series,
-    tags }' <<< "$header")
+    tags,
+    genres,
+    date}' <<< "$header")
 
   else
     echo "Fatal: _index.md in $dir does not exist"
