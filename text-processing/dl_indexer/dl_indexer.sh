@@ -82,7 +82,7 @@ do
   while read -r file
   do
     # Retrieve path name excluding the /content part
-    doc_id=$(dirname "${file#content/}")_$(basename "${file%.*}")
+    doc_id=$(dirname "${file#content/}")
     path=$(dirname "${file#content/}")/$(basename "${file%.*}")
     echo "Now indexing: " "$path"
 
