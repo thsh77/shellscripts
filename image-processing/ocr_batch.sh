@@ -1,5 +1,12 @@
 #!/bin/bash
 
+
+#
+# To do: 
+# - build in filtering of form-feed characters: sed 's/\o14//g'
+# - build in filtering of sharp parenthesis: sed 's/</\&lt;/g' and 'sed s/>/\&gt;/g'
+#
+
 PN=$(basename "$0")                      # Program name
 VER='1.0'
 #OUTPUTDIR=${PWD##*/}-scan_$(date +%Y-%m-%d_%H_%M)
@@ -55,6 +62,15 @@ shift $((OPTIND - 1))                   #Remove options, leave arguments
 #done <  <(find "$dir" -type f)
 #}
 
+filter(){
+  # Filter away form-feed (octal '\o14') characters
+  # Replace '&', '<', and '>' with entities
+  sed -E -e 's/\o14//g' \
+    -e 's/\&/\&amp;/g' \
+    -e 's/</\&lt;/g' \
+    -e 's/>/\&gt;/g' - 
+}
+
 while IFS= read -r dir
 do
   number_files="$(find "$dir" -maxdepth 1 -type f  | wc -l)"
@@ -68,7 +84,7 @@ do
     echo Processing "$file" -- "$language" -- number "$file_count" of "$number_files" files
     echo "$file" &>> "$dir"/"$outputfile"_errors.txt
     echo "<pb facs=\"""$(basename "${file%.*}")""\"/>" >> "$dir"/"$outputfile"
-    tesseract -l "$language" "$file" - >> "$dir"/"$outputfile" 2>> "$dir"/"$outputfile"_errors.txt
+    tesseract -l "$language" "$file" - | filter >> "$dir"/"$outputfile" 2>> "$dir"/"$outputfile"_errors.txt
     ((file_count++))
   done <  <(find "$dir" -type f -name "*.jpg" | sort)
 done <  <(find "$@" -maxdepth 0 -type d)
