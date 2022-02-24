@@ -8,13 +8,21 @@
 CURRENT_DIR=$(pwd)
 SCRATCHDIR=$(mktemp -d -p "$CURRENT_DIR")
 STYLESHEET='/home/th/Development/tirsdag-text-factory/xsl/letter.xsl'
-TARGETDIR='/home/th/Development/tirsdagsprojektet/content/books'
+dest='/home/th/Development/tirsdagsprojektet/content/books'
+ext='.html'
+
+export lang=da
 
 while test $# -gt 0
   do
     case $1 in
     --all | -a )
       all=yes
+      ;;
+    --english | -e )
+      ext='.en.html'
+      export lang=en
+      #usage_and_exit 0
       ;;
     --help | -h )
       usage_and_exit 0
@@ -24,7 +32,7 @@ while test $# -gt 0
       exit 0
       ;;
     --test | -t )
-      TARGETDIR='/home/th/Development/dl_develop/content/books'
+      dest='/home/th/Development/dl_develop/content/books'
       #exit 0
       ;;
     -*)
@@ -41,37 +49,40 @@ transform() {
   java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
       -s:"$*" \
       -xsl:"$STYLESHEET" \
-      -o:"$SCRATCHDIR"
+      -o:"$SCRATCHDIR" \
+      lang="$lang"
 }
 
 rename(){
   # Rename xml files with html file extension
   for file in "$SCRATCHDIR"/*.xml; do
-    mv -- "$file" "$SCRATCHDIR"/"$(basename "$file" .xml)".html
+    fname="${file##*/}"                              # Remove path
+    mv -- "$file" "$SCRATCHDIR"/"${fname%.*}""${ext}"  # Remove file extension
   done
 }
 
 cleanup() {
 
-    if [ -d "$TARGETDIR/$dir" ]
+    if [ -d "$dest/$dir" ]
     then
       if test "$all" = "yes"
       then
-      echo Full rsync of files to "$TARGETDIR"/"$dir"
-      rsync -av "$SCRATCHDIR"/* "$TARGETDIR"/"$dir"/
+      echo Full rsync of files to "$dest"/"$dir"
+      rsync -av "$SCRATCHDIR"/* "$dest"/"$dir"/
       else
-        echo Partial rsync \(HTML files only\) to "$TARGETDIR"/"$dir"
-      rsync -av "$SCRATCHDIR"/*.html "$TARGETDIR"/"$dir"/
+        echo Partial rsync \(HTML files only\) to "$dest"/"$dir"
+      rsync -av "$SCRATCHDIR"/*.html "$dest"/"$dir"/
       fi
       else
-    echo Making new directory "$TARGETDIR"/"$dir"
-    mkdir -p "$TARGETDIR"/"$dir"
-    cp -r "$SCRATCHDIR"/* "$TARGETDIR"/"$dir"
+    echo Making new directory "$dest"/"$dir"
+    mkdir -p "$dest"/"$dir"
+    cp -r "$SCRATCHDIR"/* "$dest"/"$dir"
     fi
 }
 
 while IFS= read -r dir
-do 
+do
+  echo "lang is $lang"
   echo Transforming letters in "$dir"
   transform "$@"
   rename
