@@ -1,0 +1,12 @@
+#!/bin/bash
+
+revealjs_url='/home/th/Documents/presentations/reveal.js'
+
+pandoc -t revealjs \
+       --standalone \
+       -V theme="moon" \
+       -V revealjs-url="$revealjs_url" \
+       "$1" -o "${1%.*}.html"
+
+
+
