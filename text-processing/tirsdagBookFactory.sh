@@ -4,12 +4,12 @@
 # Tuesday Project Text Platform
 
 EXITCODE=0
-PROGRAM=`basename "$0"`
+PROGRAM=$(basename "$0")
 VERSION='1.0'
 #CURRENT_DIR="$( cd "$(dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CURRENT_DIR="$( pwd )"
-SCRATCHDIR=`mktemp -d -p "$CURRENT_DIR"`
-SOURCEDIR='./'
+SCRATCHDIR=$(mktemp -d -p "$CURRENT_DIR")
+#SOURCEDIR='./'
 TARGETDIR='/home/th/Development/tirsdagsprojektet/content/books'
 STYLESHEET='/home/th/Development/tirsdag-text-factory/xsl/generator.xsl'
 all=no
@@ -25,7 +25,7 @@ usage() {
 
 usage_and_exit() {
   usage
-  exit $1
+  exit "$1"
 }
 
 version() {
@@ -34,7 +34,7 @@ version() {
 
 warning() {
   echo "$@" 1>&2
-  EXITCODE=`expr $EXITCODE + 1`
+  EXITCODE=$(expr $EXITCODE + 1)
 }
 
 while test $# -gt 0
@@ -78,7 +78,7 @@ create-colophon() {
 #  dirname=`ls $SCRATCHDIR`
   
   # Make the Danish colophon
-  touch $SCRATCHDIR/colophon.md
+  touch "$SCRATCHDIR/colophon.md"
 
   TEMPLATE="\n---
   \ntitle: kolofon
@@ -86,10 +86,10 @@ create-colophon() {
   \n---
   "
 
-  echo -e $TEMPLATE | tee -a $SCRATCHDIR/colophon.md
+  echo -e "$TEMPLATE" | tee -a "$SCRATCHDIR/colophon.md"
 
   # Make the English colophon
-  touch $SCRATCHDIR/colophon.en.md
+  touch "$SCRATCHDIR/colophon.en.md"
 
   TEMPLATE="\n---
   \ntitle: colophon
@@ -97,15 +97,19 @@ create-colophon() {
   \n---
   "
 
-  echo -e $TEMPLATE | tee -a $SCRATCHDIR/colophon.en.md
+  echo -e "$TEMPLATE" | tee -a "$SCRATCHDIR/colophon.en.md"
 
 }
+
+#add-metatexts() {
+  
+#}
 
 cleanup() {
 
   #Get directory name from temporary dir
-  dirname=`ls $SCRATCHDIR`
-  echo $dirname
+  dirname=$(ls "$SCRATCHDIR")
+  echo "$dirname"
   
   if [ -d "$TARGETDIR/$dirname" ]
   then

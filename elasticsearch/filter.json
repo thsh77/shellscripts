@@ -1,0 +1,14 @@
+{
+     "query" : {
+         "filtered" : { 
+             "query" : {
+                 "match_all" : {} 
+             },
+             "filter" : {
+                 "term" : { 
+                     "contactNumber" : "+1-415-392-3702"
+                 }
+             }
+         }
+     }
+ }

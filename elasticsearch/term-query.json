@@ -1,0 +1,8 @@
+{
+  "query":{
+    "filtered" : { 
+      "filter" : { 
+        "term" : { "doc_id.keyword": "bang-h_letters" }}
+    }
+  }
+}

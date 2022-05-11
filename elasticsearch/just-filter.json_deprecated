@@ -1,0 +1,7 @@
+{
+  "query":{
+    "filtered" : { 
+      "filter" : { "term" : { "doc_id": "smith-h_1-laegebog-top-til-taa_003" }}
+    }
+  }
+}

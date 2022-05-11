@@ -1,0 +1,12 @@
+{
+  "query":{
+    "bool" : { 
+      "must" : {
+        "match": {"view": "bryske"}
+      },
+      "filter": {
+        "term" : { 
+          "weight" : 3 }}
+    }
+  }
+}

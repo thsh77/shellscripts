@@ -38,5 +38,5 @@ FNR==1{
   #for(i=2;i<=NF;i++){
   for(i=2;i<=5;i++){                # Limit the processing to max. 5 fields
     print "  "arr[i]" = "s1 $i s1
-  }
+  }{print ""}
 }' "$@"

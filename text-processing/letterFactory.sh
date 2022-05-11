@@ -39,7 +39,7 @@ version() {
 
 warning() {
   echo "$@" 1>&2
-  EXITCODE=`expr $EXITCODE + 1`
+  EXITCODE=$(expr $EXITCODE + 1)
 }
 
 while test $# -gt 0

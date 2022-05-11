@@ -1,0 +1,15 @@
+{ "query" : {
+  "bool" : {
+    "must" : [
+      { "match": { "view": "widrik" }},
+      { "bool" : {
+        "must": [
+          { "term": { "doc_id.keyword": "anon_dvaergekongen-laurin" }}
+        ]
+      }}
+    ]
+  }
+}
+}
+
+

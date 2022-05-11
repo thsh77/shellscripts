@@ -2,10 +2,16 @@
 # 
 # awk -f ordfrekvens.awk inputfil.txt
 
+#@load "readfile"
+
 BEGIN {
+  #PROCINFO["readfile"] = 1
+  #list = readfile("liste.txt");
+  print list
   # lav liste over stopord mhp bortfiltrering
   split("de est et in pro", tmp)
-    for (i in tmp) {
+  #split("$stopord", tmp)
+    for(i in tmp) {
         stopord[tmp[i]]
     }
 }

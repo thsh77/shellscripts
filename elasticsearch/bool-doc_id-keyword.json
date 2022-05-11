@@ -1,0 +1,9 @@
+{
+  "from" : 0, "size" : 10000,
+  "query":{
+    "bool" : { 
+      "filter" : [
+        { "term": { "doc_id.keyword": "anon_dvaergekongen-laurin" }}]
+    }
+  }
+}

@@ -7,9 +7,9 @@
 
 PN=$(basename "$0")                      # Program name
 VER='1.0'
-OUTPUTDIR=${PWD##*/}-scan_`date +%Y-%m-%d_%H_%M`
+OUTPUTDIR=${PWD##*/}-scan_$(date +%Y-%m-%d_%H_%M)
 
-mkdir $OUTPUTDIR
+mkdir "$OUTPUTDIR"
 
 language='eng'
 
@@ -27,10 +27,10 @@ do
       #echo "-l passed ${OPTARG}" >&2
       language=${OPTARG}
       ;;
-    \?)
-      echo "Invalid option: -${OPTARG}" >&2
-      exit 1
-      ;;
+    #\?)
+    #  echo "Invalid option: -${OPTARG}" >&2
+    #  exit 1
+    #  ;;
     :)
       echo "Option -${OPTARG} requires an argument" >&2
       exit 1
@@ -56,21 +56,27 @@ textconcat () {
   #  echo '<pb facs="'$(basename ${f%.*})'"/>'
   #  cat "$f"
   #done > "$OUTPUTDIR/$OUTPUTDIR"_fulltext
-  find $OUTPUTDIR -type f -name "*.txt" -print | sort |
-  while read file
+  find "$OUTPUTDIR" -type f -name "*.txt" -print | sort |
+  while read -r file
     do
-      echo '<pb facs="'$(basename ${file%.*})'"/>'
+      echo "<pb facs=""$(basename "${file%.*}")""/>"
       cat "$file"
     done > "$OUTPUTDIR/$OUTPUTDIR"_fulltext
 }
 
 main () {
-  for f in "$@"
+  for f in $dir
   do 
     echo "Doing OCR with tesseract (language: ${language}) on ${f}";
-    b=$(basename ${f%.*}); tesseract -l "${language}" "${f}" "${OUTPUTDIR}/${b}";
+    b=$(basename "${f%.*}"); tesseract -l "${language}" "${f}" "${OUTPUTDIR}/${b}";
   done
 }
 
-main $@; 
-textconcat
+#main "$@"; 
+#textconcat
+
+while IFS= read -r dir
+do
+  main "$@";
+  textconcat
+done <  <(find "$@" -type d)
