@@ -12,6 +12,8 @@ dest='/home/th/Development/tirsdagsprojektet/content/books'
 ext='.html'
 
 export lang=da
+export persons=true
+export places=true
 
 while test $# -gt 0
   do
@@ -22,6 +24,16 @@ while test $# -gt 0
     --english | -e )
       ext='.en.html'
       export lang=en
+      #usage_and_exit 0
+      ;;
+    --nopersons )
+      # disable linking of personal names
+      export persons=false
+      #usage_and_exit 0
+      ;;
+    --noplaces )
+      # disable linkinh of place names
+      export places=false
       #usage_and_exit 0
       ;;
     --help | -h )
@@ -50,7 +62,9 @@ transform() {
       -s:"$*" \
       -xsl:"$STYLESHEET" \
       -o:"$SCRATCHDIR" \
-      lang="$lang"
+      lang="$lang" \
+      persons="$persons" \
+      places="$places"
 }
 
 rename(){
