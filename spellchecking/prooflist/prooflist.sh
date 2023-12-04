@@ -16,11 +16,22 @@ if ! command -v aspell &> /dev/null; then
 fi
 
 make-list() {
-    aspell list \
-        --master=tekstnet \
-        --lang=da \
-        --mode=html < "$1" | sort -u > "${1%.*}"_not-ods.txt
+      # First use sed to remove empty elements that may occur within words
+      sed -e 's/<lb[^>]*>//g' \
+          -e 's/<pb[^>]*>//g' \
+          "$1" | \
+      aspell list \
+          --master=tekstnet \
+          --lang=da \
+          --mode=html | sort -u > "${1%.*}"_not-ods.txt
 }
+
+# make-list() {
+#     aspell list \
+#         --master=tekstnet \
+#         --lang=da \
+#         --mode=html < "$1" | sort -u > "${1%.*}"_not-ods.txt
+# }
 
 if [ "$#" -eq 0 ]; then
     echo "Usage: $PROGRAM file1 [file2 ...]" >&2
