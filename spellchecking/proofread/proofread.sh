@@ -2,7 +2,9 @@
 
 #-----------------------------------------------------------------#
 # proofread.sh: Use aspell to interactively proof-read a          #
-#               text in an XML file for Tekstnet                  #
+#               text in an XML file for Tekstnet. Please note     #
+#               that the individual dictionary tekstnet must be   #
+#               available in /usr/lib/aspell.                     #
 # Author:       Thomas Hansen, 2023-11-29                         #
 #-----------------------------------------------------------------#
 
@@ -15,7 +17,7 @@ fi
 
 proof-read() {
     aspell check \
-        --master=ods \
+        --master=tekstnet \
         --home-dir=. \
         --personal="${1%.*}"_proof.dict \
         --lang=da \
