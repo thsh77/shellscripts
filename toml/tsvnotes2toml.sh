@@ -24,9 +24,10 @@
 awk -v FS='\t' -v s1="\"" '
 BEGIN {n=1}
 {
+  gsub(/\r/, "") # remove carriage return chars
   print "[n"n"]"
   print "  lemma = "s1 $1 s1
   print "  note  = "s1 $2 s1
-  {print ""}
+  {print " "}
   {n++}
 }' "$@"
