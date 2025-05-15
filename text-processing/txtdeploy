@@ -7,9 +7,10 @@
 
 CURRENT_DIR=$(pwd)
 SCRATCHDIR=$(mktemp -d -p "$CURRENT_DIR")
-STYLESHEET='/home/th/Development/tirsdag-text-factory/xsl/generator.xsl'
-metadataxsl='/home/th/Development/tirsdag-text-factory/xsl/metatext.xsl'
-dest='/home/th/Development/tirsdagsprojektet/content/books'
+#STYLESHEET='/home/th/dev/tirsdag-text-factory/xsl/generator.xsl'
+STYLESHEET='/home/th/dev/tekstnet-xsl/xsl/generator.xsl'
+metadataxsl='/home/th/dev/tirsdag-text-factory/xsl/metatext.xsl'
+dest='/home/th/dev/tirsdagsprojektet/content/books'
 ext='.html'
 
 export lang=da
@@ -47,7 +48,7 @@ while test $# -gt 0
       exit 0
       ;;
     --test | -t )
-      dest='/home/th/Development/dl_develop/content/books'
+      dest='/home/th/dev/dl_develop/content/books'
       #exit 0
       ;;
     -*)
@@ -61,7 +62,8 @@ while test $# -gt 0
 done
 
 transform() {
-  java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
+  #java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
+  java -jar /usr/local/lib/saxon/saxon-he-11.6.jar \
       -s:"$1" \
       -xsl:"$STYLESHEET" \
       -o:"$SCRATCHDIR/tst.txt" \
@@ -71,7 +73,8 @@ transform() {
 }
 
 transform_meta() {
-java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
+#java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
+java -jar /usr/local/lib/saxon/saxon-he-11.6.jar \
       -s:"$1" \
       -xsl:"$metadataxsl" \
       -o:"$2" \
@@ -95,8 +98,8 @@ cleanup() {
       echo Full rsync of files to "$dest"/"$*"
       rsync -av "$SCRATCHDIR"* "$dest"/"$*"/
       else
-        echo Partial rsync \(HTML files only\) to "$dest"/"$*"
-      rsync -av "$SCRATCHDIR"/*.html "$dest"/"$*"/
+        echo Partial rsync \(HTML and md files\) to "$dest"/"$*"
+      rsync -av --include "$SCRATCHDIR"/*.{html,md} "$dest"/"$*"/
       fi
       else
     echo Making new directory "$dest"/"$*"
@@ -122,12 +125,29 @@ do
   [[ $file = *_pre.xml ]] 
   then 
     transform_meta "$file" "$SCRATCHDIR"/preface.html
+  elif
+  [[ $file = *_int.md ]] 
+  then 
+    cp "$file" "$SCRATCHDIR"/introduction.md
+  elif
+  [[ $file = *_acc.md ]] 
+  then 
+    cp "$file" "$SCRATCHDIR"/account.md
+  elif
+  [[ $file = *_pre.md ]] 
+  then 
+    cp "$file" "$SCRATCHDIR"/preface.md
+  #elif
+  #[[ $file = introduction ]]
+  #then
+  #  echo "int is found"
+  #  cp -r "$file" "$SCRATCHDIR"
   else
-    #echo "This is another $file"
-  transform "$file"
+    transform "$file"
   fi
-done <  <(find "$@" -type f -name '*.xml' -print0)
+done <  <(find "$@" -type f \( -name '*.xml' -o -name '*.md' \) -print0)
+#done <  <(find "$@" -maxdepth 1 -type f \( -name '*.xml' -o -name '*.md' \) -o -type d \( -name 'introduction' -o -name 'account' \) -print0)
 
 
-cleanup "$@"
+#cleanup "$@"
 

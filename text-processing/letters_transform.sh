@@ -7,8 +7,9 @@
 
 CURRENT_DIR=$(pwd)
 SCRATCHDIR=$(mktemp -d -p "$CURRENT_DIR")
-STYLESHEET='/home/th/Development/tirsdag-text-factory/xsl/letter.xsl'
-dest='/home/th/Development/tirsdagsprojektet/content/books'
+#STYLESHEET='/home/th/dev/tirsdag-text-factory/xsl/letter.xsl'
+STYLESHEET='/home/th/dev/tekstnet-xsl/xsl/letter.xsl'
+dest='/home/th/dev/tirsdagsprojektet/content/books'
 ext='.html'
 
 export lang=da
@@ -58,7 +59,8 @@ while test $# -gt 0
 done
 
 transform() {
-  java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
+  #java -cp /usr/local/lib/saxon/saxon9he.jar net.sf.saxon.Transform \
+  java -jar /usr/local/lib/saxon/saxon-he-11.6.jar \
       -s:"$*" \
       -xsl:"$STYLESHEET" \
       -o:"$SCRATCHDIR" \
